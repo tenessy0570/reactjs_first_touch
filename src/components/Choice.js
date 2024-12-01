@@ -30,13 +30,13 @@ class Choice extends Component {
                     .then(res => res.json())
                     .then(data => {
                         // IMITATE API CALL
-                        let availableClasses = ["Druid", "Warrior"]
+                        let availableClasses = ["Druid", "Warrior"];
                         this.setState({
                             availableClasses: availableClasses,
                             choice: nextChoice,
                             chosenDirection: event.target.textContent
-                        })
-                    })
+                        });
+                    });
                 break;
             case "class":
                 this.setState(
@@ -105,7 +105,7 @@ class Choice extends Component {
                 </div>
             </div>
 
-        )
+        );
     }
 
     render() {
