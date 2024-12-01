@@ -4,66 +4,84 @@ import PropTypes from "prop-types";
 class Choice extends Component {
     constructor(props) {
         super(props);
-        this.state = {choice: props.choice};
+
+        let nextChoiceByCurrent = {
+            "direction": "class",
+            "class": "spec",
+            "spec": null
+        };
+
+        this.state = {
+            choice: props.choice,
+            nextChoiceByCurrent: nextChoiceByCurrent
+        };
 
         this.handleChoiceChange = this.handleChoiceChange.bind(this);
     }
 
     handleChoiceChange(event) {
-        if (event.target.classList.contains("direction_variant")) {
-            this.setState(
-                {
-                    choice: "class",
-                    chosenDirection: event.target.textContent
-                }
-            );
-            return null;
-        }
-        if (event.target.classList.contains("class_variant")) {
-            this.setState(
-                {
-                    choice: "spec",
-                    chosenDirection: this.state.chosenDirection,
-                    chosenClass: event.target.textContent
-                }
-            )
-            return null;
-        }
-        if (event.target.classList.contains("spec_variant")) {
-            this.setState(
-                {
-                    choice: null,
-                    chosenDirection: this.state.chosenDirection,
-                    chosenClass: this.state.chosenClass,
-                    chosenSpec: event.target.textContent
-                }
-            );
-            return null;
+        let state = this.state;
+        let choice = state.choice;
+        let nextChoice = state.nextChoiceByCurrent[choice];
+
+        switch (choice) {
+            case "direction":
+                fetch("https://reqres.in/api/users")
+                    .then(res => res.json())
+                    .then(data => {
+                        // IMITATE API CALL
+                        let availableClasses = ["Druid", "Warrior"]
+                        this.setState({
+                            availableClasses: availableClasses,
+                            choice: nextChoice,
+                            chosenDirection: event.target.textContent
+                        })
+                    })
+                break;
+            case "class":
+                this.setState(
+                    {
+                        choice: nextChoice,
+                        chosenDirection: state.chosenDirection,
+                        chosenClass: event.target.textContent
+                    }
+                );
+                break;
+            case "spec":
+                this.setState(
+                    {
+                        choice: nextChoice,
+                        chosenDirection: state.chosenDirection,
+                        chosenClass: state.chosenClass,
+                        chosenSpec: event.target.textContent
+                    }
+                );
+                break;
+            default:
+                return null;
         }
     }
 
     renderDirectionChoice() {
-        //let availableDirections = ...RETRIEVE FROM API;
         let availableDirections = ["PVE", "PVP"];
-        return this.renderAbstractChoice("direction_variant", availableDirections, this.handleChoiceChange);
+
+
+        return this.renderAbstractChoice(availableDirections, this.handleChoiceChange);
 
     }
 
     renderClassChoice() {
-        // let availableGameClasses = ...RETRIEVE FROM API;
-        let availableGameClasses = ["Warrior", "Druid"];
-        return this.renderAbstractChoice("class_variant", availableGameClasses, this.handleChoiceChange);
+        // let availableGameClasses = ["Warrior", "Druid"];
+        return this.renderAbstractChoice(this.state.availableClasses, this.handleChoiceChange);
 
     }
 
     renderSpecChoice() {
-        // let availableClassSpecs = ...RETRIEVE FROM API;
         let availableClassSpecs = ["Frost", "Fire", "Arcane"];
-        return this.renderAbstractChoice("spec_variant", availableClassSpecs, this.handleChoiceChange);
+        return this.renderAbstractChoice(availableClassSpecs, this.handleChoiceChange);
     }
 
     renderAbstractChoice(
-        additionalButtonClass = "abstract_variant",
         elementsList = ["1", "2", "3", "4", "5", "6"],
         clickHandler = () => {
         }
@@ -78,7 +96,7 @@ class Choice extends Component {
                             elementsList.map(
                                 (item, index) => (
                                     <button onClick={clickHandler} key={index}
-                                            className={`${additionalButtonClass} btn btn-outline-primary`}>{item}</button>
+                                            className="btn btn-outline-primary">{item}</button>
                                 )
                             )
                         }
