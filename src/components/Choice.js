@@ -62,7 +62,12 @@ class Choice extends Component {
         return this.renderAbstractChoice("spec_variant", availableClassSpecs, this.handleChoiceChange);
     }
 
-    renderAbstractChoice(additionalButtonClass, elementsList, clickHandler) {
+    renderAbstractChoice(
+        additionalButtonClass = "abstract_variant",
+        elementsList = ["1", "2", "3", "4", "5", "6"],
+        clickHandler = () => {
+        }
+    ) {
         return (
             <div>
                 <p className="text-dark text-center fs-2">Choose a direction.</p>
